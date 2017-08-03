@@ -1,0 +1,29 @@
+/*
+public List<DBData> getAllUsers() {
+    return getAllUsers(1000);
+}
+
+@SuppressWarnings("unchecked")
+public List<DBData> getAllUsers(Integer limit_number) {
+    List<DBData> data;
+    try {
+        final Query query = entityManager.createQuery("SELECT zsi_pos_id, p_deliveryaddr, p_sign FROM DBData");
+        data = query.setMaxResults(limit_number).getResultList();
+    } catch (NoResultException nre) {
+        final Logger log = Logger.getLogger(DBUtils.class.getName());
+        log.log(Level.WARNING, "NoResultException in getAllUsers");
+        return null;
+    }
+    return data;
+}
+*/
+
+/*
+public List<DBData> getAllUsers(Integer limit) {
+     return dataDao.getAllUsers(limit);
+}
+
+public List<DBData> getAllUsers() {
+     return dataDao.getAllUsers();
+}
+*/
