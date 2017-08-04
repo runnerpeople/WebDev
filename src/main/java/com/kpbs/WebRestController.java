@@ -20,8 +20,8 @@ public class Controller {
 
     private final Logger log = Logger.getLogger(Controller.class.getName());
 
-    private final int DEFAULT_START_PARAM = 0;
-    private int DEFAULT_COUNT_PARAM = 25;
+    private static final int DEFAULT_START_PARAM = 0;
+    private static int DEFAULT_COUNT_PARAM = 15;
 
     private String getURL(HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
@@ -39,10 +39,10 @@ public class Controller {
     }
 
     private HashMap<String,String[]> getParams(HttpServletRequest request,String prefix){
-        TreeMap<String,String[]> params = new TreeMap<>(request.getParameterMap());
-        SortedMap<String,String[]> find_sorted_params = getByPrefix(params,prefix);
-        HashMap<String,String[]> sorted_params = new HashMap<>();
-        String[] filter_params = new String[5];
+        TreeMap<String,String[]> all_params = new TreeMap<>(request.getParameterMap());
+        SortedMap<String,String[]> find_sorted_params = getByPrefix(all_params,prefix);
+        HashMap<String,String[]> params = new HashMap<>();
+        String[] params_array = new String[5];
         if (find_sorted_params.size() != 0) {
             for(Map.Entry<String,String[]> param: find_sorted_params.entrySet()) {
                 if (!(param.getValue()[0].equals(""))) {
@@ -50,7 +50,7 @@ public class Controller {
                     if (prefix.equals("filter")) {
                         try {
                             filter_param = URLDecoder.decode(param.getValue()[0],"UTF-8");
-                            filter_params[0] = filter_param;
+                            params_array[0] = filter_param;
                         }
                         catch (UnsupportedEncodingException ex) {
                             log.log(Level.WARNING,"Can't decode string" + param.getValue()[0]);
@@ -58,16 +58,17 @@ public class Controller {
                         }
                     }
                     else {
-                        filter_params[0] = param.getValue()[0];
+                        params_array[0] = param.getValue()[0];
                     }
                     String key = param.getKey().replace(prefix, "");
                     key = key.substring(1, key.length() - 1);
-                    sorted_params.put(key, filter_params);
+                    params.put(key, params_array);
                 }
             }
         }
-        return sorted_params;
+        return params;
     }
+
 
     @RequestMapping(value = "/changeDefault", method = RequestMethod.GET)
     public ResponseEntity<?> changeDefaultCount(@RequestParam(value = "count")Integer count_param) {
