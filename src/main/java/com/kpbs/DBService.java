@@ -15,7 +15,7 @@ public class DBService {
     private DBUtils dataDao;
 
     public ResponseServer getUsers(int start, int count, HashMap<String,String[]> sorted_params,
-                                                         HashMap<String,String[]> filter_params) {
+                                   HashMap<String,String[]> filter_params) {
         return dataDao.getUsers(start,count,sorted_params,filter_params);
     }
 

@@ -31,15 +31,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ControllerTest {
 
     @Autowired
-    protected MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-    private final String URL = "/users?continue={continue_param}&start={start_param}&count={count_param}";
+    private static final String URL = "/users?continue={continue_param}&start={start_param}&count={count_param}";
 
-    private final String CONTINUE_PARAM = "true";
-    private final String START_OK_PARAM = "10";
-    private final String START_ERROR_PARAM = "1000";
-    private final String COUNT_OK_PARAM = "20";
-    private final String COUNT_ERROR_PARAM = "-20";
+    private static final String CONTINUE_PARAM = "true";
+    private static final String START_OK_PARAM = "10";
+    private static final String START_ERROR_PARAM = "1000";
+    private static final String COUNT_OK_PARAM = "20";
+    private static final String COUNT_ERROR_PARAM = "-20";
 
     private String getUriString(String path, Map<String,String> params) {
         UriComponents uriComponents = UriComponentsBuilder.fromUriString(path).build();
@@ -108,6 +108,16 @@ public class ControllerTest {
         String uriString = getUriString(URL, params);
         mockMvc.perform(
                 get(uriString))
+                .andExpect(status().isNoContent())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.data", is(new ArrayList<>())))
+                .andReturn();
+    }
+
+    @Test
+    public void testChangeDefault() throws Exception {
+        mockMvc.perform(
+                get("/changeDefault?count=20"))
                 .andExpect(status().isNoContent())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.data", is(new ArrayList<>())))

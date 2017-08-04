@@ -21,7 +21,7 @@ public class DBServiceTest {
     @Test
     public void testServiceGetAllUsers() {
         ResponseServer users = dataService.getUsers(0, 10,null,null);
-        assertEquals(users.getData().size(), 4);
+        assertEquals(users.getData().size(), 10);
         assertEquals(users.getPos(), new Long(0L));
     }
 }

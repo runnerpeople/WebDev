@@ -19,7 +19,7 @@ public class DBUtils {
 
 
     public ResponseServer getUsers(int start_params, int count_params, HashMap<String,String[]> sorted_params,
-                                                                       HashMap<String,String[]> filter_params) {
+                                   HashMap<String,String[]> filter_params) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
         CriteriaQuery<DBData> criteriaQuery = criteriaBuilder.createQuery(DBData.class);

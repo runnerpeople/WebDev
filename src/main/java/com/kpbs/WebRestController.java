@@ -13,12 +13,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @RestController
-public class Controller {
+public class WebRestController {
 
     @Autowired
     private DBService dataDAO;
 
-    private final Logger log = Logger.getLogger(Controller.class.getName());
+    private final Logger log = Logger.getLogger(WebRestController.class.getName());
 
     private static final int DEFAULT_START_PARAM = 0;
     private static int DEFAULT_COUNT_PARAM = 15;
