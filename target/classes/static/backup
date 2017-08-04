@@ -1,0 +1,31 @@
+/* pager: {
+    view:"pager",
+    id:"paging_here",
+    size:25,
+    group:3,
+    on: {
+        onItemClick: function(id, e, node) {
+             var new_page = parseInt(id)+1;
+             console.log("users?page=" + new_page + "&size=26");
+             $$("paging_here").clearAll();
+             $$("zsi_pos_table").define("url", "users?page=" + new_page + "&size=26");
+        }
+    }
+} */
+
+/*
+on: {
+    onDataRequest: function(start,count) {
+        console.log("=========");
+        console.log("START: " + start);
+        console.log("COUNT: " + count);
+        console.log("=========");
+    },
+},
+*/
+
+/* console.log(grid);
+grid.loadNext(25, pos, function(){
+    this.showItemByIndex(pos);
+    pos += 25;
+}); */

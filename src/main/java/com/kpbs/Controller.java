@@ -21,7 +21,7 @@ public class Controller {
     private final Logger log = Logger.getLogger(Controller.class.getName());
 
     private final int DEFAULT_START_PARAM = 0;
-    private final int DEFAULT_COUNT_PARAM = 25;
+    private int DEFAULT_COUNT_PARAM = 25;
 
     private String getURL(HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
@@ -69,13 +69,19 @@ public class Controller {
         return sorted_params;
     }
 
+    @RequestMapping(value = "/changeDefault", method = RequestMethod.GET)
+    public ResponseEntity<?> changeDefaultCount(@RequestParam(value = "count")Integer count_param) {
+        DEFAULT_COUNT_PARAM = count_param;
+        log.log(Level.INFO,"Changing default value to count param");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseJSON(new ArrayList<>()));
+    }
+
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public ResponseEntity<?> getAllUsers(@RequestParam(value = "continue",required = false)Boolean continue_param,
                                          @RequestParam(value = "count",required = false)Integer count_param,
                                          @RequestParam(value = "start",required = false)Integer start_param,
                                          HttpServletRequest request) {
-
         HashMap<String,String[]> sorted_params = getParams(request,"sort");
         HashMap<String,String[]> filter_params = getParams(request,"filter");
         if (continue_param == null && count_param == null && start_param == null) {

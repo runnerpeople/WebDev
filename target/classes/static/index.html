@@ -19,23 +19,10 @@
 
     <script type="text/javascript" charset="utf-8">
 
-
         webix.ready(function () {
             if (webix.CustomScroll && !webix.env.touch) webix.CustomScroll.init();
 
-            function buttonHandler() {
-                var numberRecords = $$("counterID").getValue();
-                $$("zsi_pos_table").define("yCount",numberRecords);
-                $$("zsi_pos_table").define("datafetch",numberRecords);
-                $$("zsi_pos_table").define("loadahead",numberRecords);
-                $$("zsi_pos_table").define("loadahead",numberRecords);
-                $$("zsi_pos_table").clearAll();
-                var xhttp = new XMLHttpRequest();
-                xhttp.open("GET", "/changeDefault?count="+numberRecords, true);
-                xhttp.send();
-                $$("zsi_pos_table").define("url","users");
-            }
-
+            var pos = 25;
             var grid = {
                 id: "zsi_pos_table",
                 container: "zsi_pos",
@@ -80,40 +67,10 @@
 
             };
 
-            var counter = {
-                id: "counterID",
-                view: "counter",
-                label:"Показывать по: ",
-                labelWidth: 125,
-                step:1,
-                value:25,
-                min:10,
-                max:100,
-            };
-
-            var buttonView = {
-                view:"button",
-                id: "buttonID",
-                label:"Подтвердить!",
-                width:125,
-                click:buttonHandler
-            }
-
             var flex = {
                 margin: 10, padding: 0, type: "wide",
                 rows: [
-                    {
-                        cols: [
-                            counter,buttonView
-                        ]
-                    },
-                ]
-            };
-
-            var flex2 = {
-                margin: 10, padding: 0, type: "wide",
-                rows: [
-                    flex, grid
+                    grid
                 ]
             };
 
@@ -121,7 +78,7 @@
                 rows: [
                     {
                         cols: [
-                            {view: "scrollview", body: flex2},
+                            {view: "scrollview", body: flex},
                         ]
                     },
                 ]
