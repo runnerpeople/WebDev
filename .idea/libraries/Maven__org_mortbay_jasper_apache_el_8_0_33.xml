@@ -3,9 +3,7 @@
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jasper/apache-el/8.0.33/apache-el-8.0.33.jar!/" />
     </CLASSES>
-    <JAVADOC>
-      <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jasper/apache-el/8.0.33/apache-el-8.0.33-javadoc.jar!/" />
-    </JAVADOC>
+    <JAVADOC />
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jasper/apache-el/8.0.33/apache-el-8.0.33-sources.jar!/" />
     </SOURCES>

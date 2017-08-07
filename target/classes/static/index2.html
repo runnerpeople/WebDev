@@ -10,6 +10,7 @@
         }
 
     </style>
+
     <!-- Webix Library -->
     <script type="text/javascript" src="libs/webix/webix.js"></script>
     <script type="text/javascript" src="libs/webix/i18n/ru.js"></script>
@@ -18,326 +19,401 @@
 
     <script type="text/javascript" charset="utf-8">
 
+    var datapoint = "data";
 
-        webix.ready(function () {
-            if (webix.CustomScroll && !webix.env.touch) webix.CustomScroll.init();
+    var formatNumber = function(value) {
+        return (value < 10) ? '0' + value : value;
+    };
 
-            function buttonHandler() {
-                var numberRecords = $$("counterID").getValue();
-                $$("zsi_pos_table").define("yCount",numberRecords);
-                $$("zsi_pos_table").define("datafetch",numberRecords);
-                $$("zsi_pos_table").define("loadahead",numberRecords*2);
-                $$("zsi_pos_table").clearAll();
-                var xhttp = new XMLHttpRequest();
-                xhttp.open("GET", "/changeDefault?count="+numberRecords, true);
-                xhttp.send();
-                $$("zsi_pos_table").define("url","data");
-            }
+    var timestampToStr = function(value) {
+        var a = new Date(value);
+        return time = a.getFullYear() + '-' + formatNumber(a.getMonth() + 1) + '-' + formatNumber(a.getDate()) + ' '
+                   + formatNumber(a.getHours()) + ':' + formatNumber(a.getMinutes()) + ':' + formatNumber(a.getSeconds()) + "."
+                   + a.getMilliseconds();
+    };
 
-            var grid = {
-                id: "zsi_pos_table",
-                container: "zsi_pos",
-                view: "datatable", select: true, editable: true, editaction: "dblclick",
-                scrollX: true,
-                scrollY: true,
-                minWidth: 500,
-                minHeight: 300,
-                columns: [
-					{
-					    id: "zsi_pos_id",
-					    header: ["zsi_pos_id", {content: "serverFilter"}],
-					    sort: "server",
-					    minWidth: 250,
-					    fillspace: 1
-					},
-					{
-					    id: "zsi_transdata_id",
-					    header: ["zsi_transdata_id", {content: "serverFilter"}],
-					    sort: "server",
-					    minWidth: 250,
-					    fillspace: 1
-					},
-					{
-					    id: "ad_client_id",
-					    header: ["ad_client_id", {content: "serverFilter"}],
-					    sort: "server",
-					    minWidth: 250,
-					    fillspace: 1
-					},
-					{
-					    id: "ad_org_id",
-					    header: ["ad_org_id", {content: "serverFilter"}],
-					    sort: "server",
-					    minWidth: 70,
-					    fillspace: 1
-					},
-					{
-					    id: "isactive",
-					    header: ["isactive", {content: "serverSelectFilter"}],
-					    sort: "server",
-					    minWidth: 60,
-					    fillspace: 1,
-					    options: [
-					        {id: "Y", value: "Da"},
-					        {id: "N", value: "Net"}
-					    ]
-					},
-					{
-					    id: "created",
-					    header: ["created", {content: "serverFilter"}],
-					    format: function(value){
-					        var a = new Date(value);
-                            var year = a.getFullYear();
-                            var month = (a.getMonth() + 1) < 10 ? '0' + (a.getMonth() + 1) : (a.getMonth() + 1);
-                            var date = a.getDate() < 10 ? '0' + a.getDate() : a.getDate();
-                            var hour = a.getHours() < 10 ? '0' + a.getHours() : a.getHours();
-                            var min = a.getMinutes() < 10 ? '0' + a.getMinutes() : a.getMinutes();
-                            var sec = a.getSeconds() < 10 ? '0' + a.getSeconds() : a.getSeconds();
-                            var millisec = a.getMilliseconds();
-                            var time = year + '-' + month + '-' + date + ' ' + hour + ':' + min + ':' + sec + "." + millisec;
-                            return time;
-                        },
-					    sort: "server",
-					    minWidth: 200,
-					    fillspace: 1
-					},
-					{
-					    id: "createdby",
-					    header: ["createdby", {content: "serverFilter"}],
-					    sort: "server",
-					    minWidth: 70,
-					    fillspace: 1
-					},
-					{
-					    id: "updated",
-					    header: ["updated", {content: "serverFilter"}],
-					    format: function(value){
-					        var a = new Date(value);
-                            var year = a.getFullYear();
-                            var month = (a.getMonth() + 1) < 10 ? '0' + (a.getMonth() + 1) : (a.getMonth() + 1);
-                            var date = a.getDate() < 10 ? '0' + a.getDate() : a.getDate();
-                            var hour = a.getHours() < 10 ? '0' + a.getHours() : a.getHours();
-                            var min = a.getMinutes() < 10 ? '0' + a.getMinutes() : a.getMinutes();
-                            var sec = a.getSeconds() < 10 ? '0' + a.getSeconds() : a.getSeconds();
-                            var millisec = a.getMilliseconds();
-                            var time = year + '-' + month + '-' + date + ' ' + hour + ':' + min + ':' + sec + "." + millisec;
-                            return time;
-                        },
-					    sort: "server",
-					    minWidth: 200,
-					    fillspace: 1
-					},
-					{
-					    id: "updatedby",
-					    header: ["updatedby", {content: "serverFilter"}],
-					    sort: "server",
-					    minWidth: 70,
-					    fillspace: 1
-					},
-                    {
-                        id: "p_poscode",
-                        header: ["p_poscode", {content: "serverFilter"}],
-                        sort: "server",
-                        minWidth: 70,
-                        fillspace: 1
-                    },
-                    {
-                        id: "p_name",
-                        header: ["p_name", {content: "serverFilter"}],
-                        sort: "server",
-                        minWidth: 350,
-                        fillspace: 1
-                    },
-                    {
-                        id: "p_code",
-                        header: ["p_code", {content: "serverFilter"}],
-                        sort: "server",
-                        minWidth: 70,
-                        fillspace: 1
-                    },
-                    {
-                        id: "p_inn",
-                        header: ["p_inn", {content: "serverFilter"}],
-                        sort: "server",
-                        minWidth: 110,
-                        fillspace: 1
-                    },
-                    {
-                        id: "p_addr",
-                        header: ["p_addr", {content: "serverFilter"}],
-                        sort: "server",
-                        minWidth: 500,
-                        fillspace: 1
-                    },
-                    {
-                        id: "p_deliveryaddr",
-                        header: ["p_deliveryaddr", {content: "serverFilter"}],
-                        sort: "server",
-                        minWidth: 500,
-                        fillspace: 1
-                    },
-                    {
-                        id: "p_sign",
-                        header: ["p_sign", {content: "serverFilter"}],
-                        sort: "server",
-                        minWidth: 250,
-                        fillspace: 1
-                    },
-                    {
-                        id: "p_posaddr",
-                        header: ["p_posaddr", {content: "serverFilter"}],
-                        sort: "server",
-                        minWidth: 500,
-                        fillspace: 1
-                    },
-                    {
-                        id: "p_latitude",
-                        header: ["p_latitude", {content: "serverSelectFilter"}],
-                        sort: "server",
-                        minWidth: 70,
-                        fillspace: 1
-                    },
-                    {
-                        id: "p_longitude",
-                        header: ["p_longitude", {content: "serverFilter"}],
-                        sort: "server",
-                        minWidth: 70,
-                        fillspace: 1
-                    },
-                    {
-                        id: "p_comment",
-                        header: ["p_comment", {content: "serverFilter"}],
-                        sort: "server",
-                        minWidth: 70,
-                        fillspace: 1
-                    },
-                    {
-                        id: "p_enriched_ts",
-                        header: ["p_enriched_ts", {content: "serverFilter"}],
-                        format: function(value){
-					        var a = new Date(value);
-                            var year = a.getFullYear();
-                            var month = (a.getMonth() + 1) < 10 ? '0' + (a.getMonth() + 1) : (a.getMonth() + 1);
-                            var date = a.getDate() < 10 ? '0' + a.getDate() : a.getDate();
-                            var hour = a.getHours() < 10 ? '0' + a.getHours() : a.getHours();
-                            var min = a.getMinutes() < 10 ? '0' + a.getMinutes() : a.getMinutes();
-                            var sec = a.getSeconds() < 10 ? '0' + a.getSeconds() : a.getSeconds();
-                            var millisec = a.getMilliseconds();
-                            var time = year + '-' + month + '-' + date + ' ' + hour + ':' + min + ':' + sec + "." + millisec;
-                            return time;
-                        },
-                        sort: "server",
-                        minWidth: 200,
-                        fillspace: 1
-                    },
-                    {
-                        id: "p_enriched",
-                        header: ["p_enriched", {content: "serverSelectFilter"}],
-                        sort: "server",
-                        minWidth: 70,
-                        fillspace: 1
-                    },
-                    {
-                        id: "p_region",
-                        header: ["p_region", {content: "serverFilter"}],
-                        sort: "server",
-                        minWidth: 70,
-                        fillspace: 1
-                    },
-                    {
-                        id: "p_company_short",
-                        header: ["p_company_short", {content: "serverFilter"}],
-                        sort: "server",
-                        minWidth: 250,
-                        fillspace: 1
-                    },
-                    {
-                        id: "latitude",
-                        header: ["latitude", {content: "serverFilter"}],
-                        sort: "server",
-                        minWidth: 100,
-                        fillspace: 1
-                    },
-                    {
-                        id: "longitude",
-                        header: ["longitude", {content: "serverFilter"}],
-                        sort: "server",
-                        minWidth: 100,
-                        fillspace: 1
-                    }
-                ],
-                url: "data",
+    var onReady = function() {
+        if (webix.CustomScroll && !webix.env.touch) webix.CustomScroll.init();
+
+        var buttonHandler = function() {
+            var numberRecords = $$("counterID").getValue();
+            var table = $$("zsi_pos_table");
+            table.define("yCount",numberRecords);
+            table.define("datafetch",numberRecords);
+            table.define("loadahead",numberRecords*2);
+            table.clearAll();
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "/changeDefault?count="+numberRecords, true);
+            xhttp.send();
+        }
+
+        var getDataProcessorDefinition = function() {
+            return {
+                undoOnError: true,
                 datatype: "json",
-                yCount:15,
-
-                ready: function () {
-                    webix.extend(this, webix.ProgressBar);
+                save: {
+                    "insert": "data?operation=insert",
+                    "update": "data?operation=update",
+                    "delete": "data?operation=delete",
                 },
-
-                datafetch:15,
-                datathrottle: 250,
-                loadahead:30,
-
-            };
-
-
-            var counter = {
-                id: "counterID",
-                view: "counter",
-                label:"Показывать по: ",
-                labelWidth: 125,
-                step:1,
-                value:15,
-                min:10,
-                max:100,
-            };
-
-            var buttonView = {
-                view:"button",
-                id: "buttonID",
-                label:"Подтвердить!",
-                width:125,
-                click:buttonHandler
-            };
-
-            var flex = {
-                margin: 10, padding: 0, type: "wide",
-                rows: [
-                    {
-                        cols: [
-                            counter,buttonView
-                        ]
+                on: {
+                    onValidationError: function(id, obj, details) {
+                        webix.message({type: "error", text: "Проверьте правильность заполнения полей"});
                     },
-                ]
-            };
-
-            var flex2 = {
-                margin: 10, padding: 0, type: "wide",
-                rows: [
-                    flex, grid
-                ]
-            };
-
-            webix.ui({
-                rows: [
-                    {
-                        cols: [
-                            flex2
-                        ]
+                    onAfterSave: function () {
+                        webix.message("Данные изменены");
                     },
-                ]
-            });
+                    onBeforeSaveError: function (id, status, response, details) {
+                        var errDetail = null;
+                        try {
+                            errDetail = JSON.parse(details.text);
+                        }
+                        catch (e) {
+                        }
+                        if (errDetail && errDetail.errMsg)
+                            webix.message({type: "error", text: errDetail.errMsg});
+                        else
+                            webix.message({type: "error", text: "Неизвестная ошибка при сохранении изменений"});
+                    },
+                }
+            };
+        },
 
-            webix.ui.fullScreen();
+        getDataCollectionDefinition = function(dsid, masterGrid) {
+            return {
+                url: datapoint,
+                on: {
+                    onLoadError: function (text, xml, xhr) {
+                        var errAnswer = null;
+                        try {
+                            errAnswer = JSON.parse(text);
+                        } catch (e) {
+
+                        }
+                        if (errAnswer == null || errAnswer.errType == null) {
+                            webix.message({type: "error", text: "Произошла неизвестная ошибка при загрузке данных"});
+                            return;
+                        }
+                        webix.message({type: "error", text: "Ошибка загрузки данных: " + errAnswer.errMsg});
+
+                    },
+                    onBeforeLoad: function () {
+                        if (masterGrid)
+                            masterGrid.showOverlay("Загрузка...");
+                    },
+                    onAfterLoad: function () {
+                        if (masterGrid)
+                            masterGrid.hideOverlay();
+                    },
+                }
+            };
+        },
+
+      getDataProcessor = function(master) {
+			    var dataprocessor = getDataProcessorDefinition("someIdentifier");
+			    dataprocessor.master = master;
+			    dataprocessor.rules = {
+            /*
+              "name": webix.rules.isNotEmpty,
+              "ap_category_id": webix.rules.isNotEmpty,
+              "ap_trademark_id": webix.rules.isNotEmpty,
+              */
+              //"art_weight": webix.rules.isNumber,
+
+			    };
+			    return dataprocessor;
+		  },
+
+		  getDataCollection = function(masterGrid, id) {
+			    var datacollection = getDataCollectionDefinition("dsID", masterGrid);
+			    if (id)
+				    datacollection.id = id;
+			    return datacollection;
+		  };
+
+      var grid = {
+        id: "zsi_pos_table",
+        container: "zsi_pos",
+        view: "datatable", select: "cell", editable: true, editaction: "dblclick",
+        scrollX: true,
+        scrollY: true,
+        minWidth: 500,
+        minHeight: 300,
+        columns: [
+          {
+            id: "zsi_pos_id",
+            header: ["zsi_pos_id", {content: "serverFilter"}],
+            sort: "server",
+            minWidth: 250,
+            fillspace: 1,
+            editor: "text",
+          },
+          {
+            id: "zsi_transdata_id",
+            header: ["zsi_transdata_id", {content: "serverFilter"}],
+            sort: "server",
+            minWidth: 250,
+            fillspace: 1
+          },
+          {
+            id: "ad_client_id",
+            header: ["ad_client_id", {content: "serverFilter"}],
+            sort: "server",
+            minWidth: 250,
+            fillspace: 1
+          },
+          {
+            id: "ad_org_id",
+            header: ["ad_org_id", {content: "serverFilter"}],
+            sort: "server",
+            minWidth: 70,
+            fillspace: 1
+          },
+          {
+            id: "isactive",
+            header: ["isactive", {content: "serverSelectFilter"}],
+            sort: "server",
+            minWidth: 60,
+            fillspace: 1,
+            options: [
+              {id: "Y", value: "Da"},
+              {id: "N", value: "Net"}
+            ]
+          },
+          {
+            id: "created",
+            header: ["created", {content: "serverFilter"}],
+            format: timestampToStr,
+            sort: "server",
+            minWidth: 200,
+            fillspace: 1
+          },
+          {
+            id: "createdby",
+            header: ["createdby", {content: "serverFilter"}],
+            sort: "server",
+            minWidth: 70,
+            fillspace: 1
+          },
+          {
+            id: "updated",
+            header: ["updated", {content: "serverFilter"}],
+            format: timestampToStr,
+            sort: "server",
+            minWidth: 200,
+            fillspace: 1
+          },
+          {
+            id: "updatedby",
+            header: ["updatedby", {content: "serverFilter"}],
+            sort: "server",
+            minWidth: 70,
+            fillspace: 1
+          },
+          {
+            id: "p_poscode",
+            header: ["p_poscode", {content: "serverFilter"}],
+            sort: "server",
+            minWidth: 70,
+            fillspace: 1
+          },
+          {
+            id: "p_name",
+            header: ["p_name", {content: "serverFilter"}],
+            sort: "server",
+            minWidth: 350,
+            fillspace: 1
+          },
+          {
+            id: "p_code",
+            header: ["p_code", {content: "serverFilter"}],
+            sort: "server",
+            minWidth: 70,
+            fillspace: 1
+          },
+          {
+            id: "p_inn",
+            header: ["p_inn", {content: "serverFilter"}],
+            sort: "server",
+            minWidth: 110,
+            fillspace: 1
+          },
+          {
+            id: "p_addr",
+            header: ["p_addr", {content: "serverFilter"}],
+            sort: "server",
+            minWidth: 500,
+            fillspace: 1
+          },
+          {
+            id: "p_deliveryaddr",
+            header: ["p_deliveryaddr", {content: "serverFilter"}],
+            sort: "server",
+            minWidth: 500,
+            fillspace: 1
+          },
+          {
+            id: "p_sign",
+            header: ["p_sign", {content: "serverFilter"}],
+            sort: "server",
+            minWidth: 250,
+            fillspace: 1
+          },
+          {
+            id: "p_posaddr",
+            header: ["p_posaddr", {content: "serverFilter"}],
+            sort: "server",
+            minWidth: 500,
+            fillspace: 1
+          },
+          {
+            id: "p_latitude",
+            header: ["p_latitude", {content: "serverSelectFilter"}],
+            sort: "server",
+            minWidth: 70,
+            fillspace: 1
+          },
+          {
+            id: "p_longitude",
+            header: ["p_longitude", {content: "serverFilter"}],
+            sort: "server",
+            minWidth: 70,
+            fillspace: 1
+          },
+          {
+            id: "p_comment",
+            header: ["p_comment", {content: "serverFilter"}],
+            sort: "server",
+            minWidth: 70,
+            fillspace: 1
+          },
+          {
+            id: "p_enriched_ts",
+            header: ["p_enriched_ts", {content: "serverFilter"}],
+            format: timestampToStr,
+            sort: "server",
+            minWidth: 200,
+            fillspace: 1
+          },
+          {
+            id: "p_enriched",
+            header: ["p_enriched", {content: "serverSelectFilter"}],
+            sort: "server",
+            minWidth: 70,
+            fillspace: 1
+          },
+          {
+            id: "p_region",
+            header: ["p_region", {content: "serverFilter"}],
+            sort: "server",
+            minWidth: 70,
+            fillspace: 1
+          },
+          {
+            id: "p_company_short",
+            header: ["p_company_short", {content: "serverFilter"}],
+            sort: "server",
+            minWidth: 250,
+            fillspace: 1
+          },
+          {
+            id: "latitude",
+            header: ["latitude", {content: "serverFilter"}],
+            sort: "server",
+            minWidth: 100,
+            fillspace: 1
+          },
+          {
+            id: "longitude",
+            header: ["longitude", {content: "serverFilter"}],
+            sort: "server",
+            minWidth: 100,
+            fillspace: 1
+          }
+        ],
+        datatype: "json",
+        yCount:15,
+        url: datapoint,
+
+        ready: function () {
+          webix.extend(this, webix.ProgressBar);
+        },
+
+        datafetch:15,
+        datathrottle: 250,
+        loadahead:30,
+
+      };
 
 
-        });
+      var counter = {
+        id: "counterID",
+        view: "counter",
+        label:"Показывать по: ",
+        labelWidth: 125,
+        step:1,
+        value:15,
+        min:10,
+        max:100,
+      };
+
+      var buttonView = {
+        view:"button",
+        id: "buttonID",
+        label:"Подтвердить!",
+        width:125,
+        click:buttonHandler
+      };
+
+      var flex = {
+        margin: 10, padding: 0, type: "wide",
+        rows: [
+          {
+            cols: [
+              counter,buttonView
+            ]
+          },
+        ]
+      };
+
+      var flex2 = {
+        margin: 10, padding: 0, type: "wide",
+        rows: [
+          flex, grid
+        ]
+      };
+
+      webix.ui({
+        rows: [
+          {
+            cols: [
+              flex2
+            ]
+          },
+        ]
+      });
+
+      var table = $$('zsi_pos_table');
+
+      var store = new webix.DataCollection(getDataCollection(table, 'tableDataCollection'));
+      var dp = new webix.DataProcessor(getDataProcessor(store));
+      console.log(store);
+      console.log(dp);
+
+      table.data.sync(store);
+
+      webix.ui.fullScreen();
+    }
+
+
+    webix.ready(onReady);
+
 
 
     </script>
 
     <!-- Development only -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js" ></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js"></script>
 </head>
 <body></body>
 </html>

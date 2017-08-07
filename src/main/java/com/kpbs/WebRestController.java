@@ -42,9 +42,9 @@ public class WebRestController {
         TreeMap<String,String[]> all_params = new TreeMap<>(request.getParameterMap());
         SortedMap<String,String[]> find_sorted_params = getByPrefix(all_params,prefix);
         HashMap<String,String[]> params = new HashMap<>();
-        String[] params_array = new String[5];
         if (find_sorted_params.size() != 0) {
             for(Map.Entry<String,String[]> param: find_sorted_params.entrySet()) {
+                String[] params_array = new String[5];
                 if (!(param.getValue()[0].equals(""))) {
                     String filter_param;
                     if (prefix.equals("filter")) {
@@ -108,5 +108,17 @@ public class WebRestController {
                 return ResponseEntity.ok().body(response);
             }
         }
+    }
+
+    @RequestMapping(value = "/data", method = RequestMethod.POST)
+    public ResponseEntity<?> changeData(@RequestParam(value = "operation")String operation,
+                                        @RequestBody RequestData body,
+                                        HttpServletRequest request) {
+        if (!operation.equals("insert") && !(operation.equals("update")) && !(operation.equals("delete"))) {
+            log.log(Level.WARNING,"User can't make this type of request (" + getURL(request) + ")");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseMessage("failure",
+                    "Don't have this type of operation with data - \"" + operation + "\""));
+        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseJSON(new ArrayList<>()));
     }
 }

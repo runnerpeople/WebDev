@@ -8,10 +8,7 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,6 +40,8 @@ public class DBUtils {
             }
         }
         if (filter_params != null) {
+            ArrayList<Predicate> predicates = new ArrayList<>();
+            ArrayList<Predicate> predicatesToCount = new ArrayList<>();
             for (Map.Entry<String,String[]> filter_param: filter_params.entrySet()) {
                 Field field;
                 try {
@@ -59,8 +58,8 @@ public class DBUtils {
                         Expression<String> path2 = from2.get(filter_param.getKey());
                         Predicate pred = criteriaBuilder.like(path, filter_param.getValue()[0] + "%");
                         Predicate pred2 = criteriaBuilder.like(path2, filter_param.getValue()[0] + "%");
-                        criteriaQuery = criteriaQuery.where(pred);
-                        countQuery = countQuery.where(pred2);
+                        predicates.add(pred);
+                        predicatesToCount.add(pred2);
                         break;
                     }
                     case "java.lang.Character": {
@@ -68,8 +67,8 @@ public class DBUtils {
                         Expression<Character> path2 = from2.get(filter_param.getKey());
                         Predicate pred = criteriaBuilder.equal(path, filter_param.getValue()[0].charAt(0));
                         Predicate pred2 = criteriaBuilder.equal(path2, filter_param.getValue()[0].charAt(0));
-                        criteriaQuery = criteriaQuery.where(pred);
-                        countQuery = countQuery.where(pred2);
+                        predicates.add(pred);
+                        predicatesToCount.add(pred2);
                         break;
                     }
                     case "java.util.Date": {
@@ -124,8 +123,8 @@ public class DBUtils {
                         }
                         if (pred == null && pred2 == null)
                             return null;
-                        criteriaQuery = criteriaQuery.where(pred);
-                        countQuery = countQuery.where(pred2);
+                        predicates.add(pred);
+                        predicatesToCount.add(pred2);
                         break;
                     }
                     case "java.math.BigDecimal": {
@@ -170,12 +169,18 @@ public class DBUtils {
                         }
                         if (pred == null && pred2 == null)
                             return null;
-                        criteriaQuery = criteriaQuery.where(pred);
-                        countQuery = countQuery.where(pred2);
+                        predicates.add(pred);
+                        predicatesToCount.add(pred2);
                         break;
                     }
                 }
             }
+            Predicate[] predicateArray = new Predicate[predicates.size()];
+            predicateArray = predicates.toArray(predicateArray);
+            Predicate[] predicateToCountArray = new Predicate[predicatesToCount.size()];
+            predicateToCountArray = predicatesToCount.toArray(predicateToCountArray);
+            criteriaQuery = criteriaQuery.where(predicateArray);
+            countQuery = countQuery.where(predicateToCountArray);
         }
         select = criteriaQuery.select(from);
 

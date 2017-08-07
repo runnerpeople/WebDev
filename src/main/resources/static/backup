@@ -30,10 +30,3 @@ grid.loadNext(25, pos, function(){
     pos += 25;
 }); */
 
-/*
-save: {
-    "insert": "data?operation=insert",
-    "update": "data?operation=update",
-    "delete": "data?operation=delete",
-}
-*/
