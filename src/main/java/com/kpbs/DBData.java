@@ -1,11 +1,9 @@
 package com.kpbs;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Date;
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Entity
 @Table(name = "zsi_pos")
@@ -30,6 +28,7 @@ public class DBData implements Serializable {
     private Character isactive;
 
     @Column(name = "created",columnDefinition = "timestamp without time zone")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date created;
 
     @Column(name = "createdby",length = 32)
@@ -86,15 +85,15 @@ public class DBData implements Serializable {
     @Column(name = "p_company_short",length = 255,columnDefinition = "character varying(255) DEFAULT ''::character varying")
     private String p_company_short;
 
-    @Column(name = "latitude",columnDefinition = "numeric(10,6) DEFAULT 0")
-    private String latitude;
+    @Column(name = "latitude",precision=10, scale=6)
+    private BigDecimal latitude;
 
-    @Column(name = "longitude",columnDefinition = "numeric(10,6) DEFAULT 0")
-    private String longitude;
+    @Column(name = "longitude",precision=10, scale=6)
+    private BigDecimal longitude;
 
     public DBData() {}
 
-    public DBData(String zsi_pos_id, String zsi_transdata_id, String ad_client_id, String ad_org_id, Character isactive, Date created, String createdby, Date updated, String updateby, String p_poscode, String p_name, String p_code, String p_inn, String p_addr, String p_deliveryaddr, String p_sign, String p_posaddr, String p_latitude, String p_longitude, String p_comment, Date p_enriched_ts, String p_enriched, String p_region, String p_company_short, String latitude, String longitude) {
+    public DBData(String zsi_pos_id, String zsi_transdata_id, String ad_client_id, String ad_org_id, Character isactive, Date created, String createdby, Date updated, String updateby, String p_poscode, String p_name, String p_code, String p_inn, String p_addr, String p_deliveryaddr, String p_sign, String p_posaddr, String p_latitude, String p_longitude, String p_comment, Date p_enriched_ts, String p_enriched, String p_region, String p_company_short, BigDecimal latitude, BigDecimal longitude) {
         this.zsi_pos_id = zsi_pos_id;
         this.zsi_transdata_id = zsi_transdata_id;
         this.ad_client_id = ad_client_id;
@@ -315,19 +314,19 @@ public class DBData implements Serializable {
         this.p_company_short = p_company_short;
     }
 
-    public String getLatitude() {
+    public BigDecimal getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(BigDecimal latitude) {
         this.latitude = latitude;
     }
 
-    public String getLongitude() {
+    public BigDecimal getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(BigDecimal longitude) {
         this.longitude = longitude;
     }
 }

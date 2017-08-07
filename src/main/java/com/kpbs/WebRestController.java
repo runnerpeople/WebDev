@@ -78,8 +78,8 @@ public class WebRestController {
     }
 
 
-    @RequestMapping(value = "/users", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllUsers(@RequestParam(value = "continue",required = false)Boolean continue_param,
+    @RequestMapping(value = "/data", method = RequestMethod.GET)
+    public ResponseEntity<?> getData(@RequestParam(value = "continue",required = false)Boolean continue_param,
                                          @RequestParam(value = "count",required = false)Integer count_param,
                                          @RequestParam(value = "start",required = false)Integer start_param,
                                          HttpServletRequest request) {
@@ -99,8 +99,8 @@ public class WebRestController {
         }
         else {
             ResponseServer response = dataDAO.getUsers(start_param,count_param,sorted_params,filter_params);
-            if (response.getData() == null || response.getData().size() == 0) {
-                log.log(Level.WARNING,"Start position of data exceed limit of data");
+            if (response == null) {
+                log.log(Level.WARNING,"No data");
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseJSON(new ArrayList<>()));
             }
             else {
@@ -109,5 +109,4 @@ public class WebRestController {
             }
         }
     }
-
 }

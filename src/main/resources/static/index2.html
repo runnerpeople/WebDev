@@ -31,7 +31,7 @@
                 var xhttp = new XMLHttpRequest();
                 xhttp.open("GET", "/changeDefault?count="+numberRecords, true);
                 xhttp.send();
-                $$("zsi_pos_table").define("url","users");
+                $$("zsi_pos_table").define("url","data");
             }
 
             var grid = {
@@ -73,14 +73,30 @@
 					},
 					{
 					    id: "isactive",
-					    header: ["isactive", {content: "serverFilter"}],
+					    header: ["isactive", {content: "serverSelectFilter"}],
 					    sort: "server",
 					    minWidth: 60,
-					    fillspace: 1
+					    fillspace: 1,
+					    options: [
+					        {id: "Y", value: "Da"},
+					        {id: "N", value: "Net"}
+					    ]
 					},
 					{
 					    id: "created",
 					    header: ["created", {content: "serverFilter"}],
+					    format: function(value){
+					        var a = new Date(value);
+                            var year = a.getFullYear();
+                            var month = (a.getMonth() + 1) < 10 ? '0' + (a.getMonth() + 1) : (a.getMonth() + 1);
+                            var date = a.getDate() < 10 ? '0' + a.getDate() : a.getDate();
+                            var hour = a.getHours() < 10 ? '0' + a.getHours() : a.getHours();
+                            var min = a.getMinutes() < 10 ? '0' + a.getMinutes() : a.getMinutes();
+                            var sec = a.getSeconds() < 10 ? '0' + a.getSeconds() : a.getSeconds();
+                            var millisec = a.getMilliseconds();
+                            var time = year + '-' + month + '-' + date + ' ' + hour + ':' + min + ':' + sec + "." + millisec;
+                            return time;
+                        },
 					    sort: "server",
 					    minWidth: 200,
 					    fillspace: 1
@@ -95,6 +111,18 @@
 					{
 					    id: "updated",
 					    header: ["updated", {content: "serverFilter"}],
+					    format: function(value){
+					        var a = new Date(value);
+                            var year = a.getFullYear();
+                            var month = (a.getMonth() + 1) < 10 ? '0' + (a.getMonth() + 1) : (a.getMonth() + 1);
+                            var date = a.getDate() < 10 ? '0' + a.getDate() : a.getDate();
+                            var hour = a.getHours() < 10 ? '0' + a.getHours() : a.getHours();
+                            var min = a.getMinutes() < 10 ? '0' + a.getMinutes() : a.getMinutes();
+                            var sec = a.getSeconds() < 10 ? '0' + a.getSeconds() : a.getSeconds();
+                            var millisec = a.getMilliseconds();
+                            var time = year + '-' + month + '-' + date + ' ' + hour + ':' + min + ':' + sec + "." + millisec;
+                            return time;
+                        },
 					    sort: "server",
 					    minWidth: 200,
 					    fillspace: 1
@@ -164,7 +192,7 @@
                     },
                     {
                         id: "p_latitude",
-                        header: ["p_latitude", {content: "serverFilter"}],
+                        header: ["p_latitude", {content: "serverSelectFilter"}],
                         sort: "server",
                         minWidth: 70,
                         fillspace: 1
@@ -186,13 +214,25 @@
                     {
                         id: "p_enriched_ts",
                         header: ["p_enriched_ts", {content: "serverFilter"}],
+                        format: function(value){
+					        var a = new Date(value);
+                            var year = a.getFullYear();
+                            var month = (a.getMonth() + 1) < 10 ? '0' + (a.getMonth() + 1) : (a.getMonth() + 1);
+                            var date = a.getDate() < 10 ? '0' + a.getDate() : a.getDate();
+                            var hour = a.getHours() < 10 ? '0' + a.getHours() : a.getHours();
+                            var min = a.getMinutes() < 10 ? '0' + a.getMinutes() : a.getMinutes();
+                            var sec = a.getSeconds() < 10 ? '0' + a.getSeconds() : a.getSeconds();
+                            var millisec = a.getMilliseconds();
+                            var time = year + '-' + month + '-' + date + ' ' + hour + ':' + min + ':' + sec + "." + millisec;
+                            return time;
+                        },
                         sort: "server",
                         minWidth: 200,
                         fillspace: 1
                     },
                     {
                         id: "p_enriched",
-                        header: ["p_enriched", {content: "serverFilter"}],
+                        header: ["p_enriched", {content: "serverSelectFilter"}],
                         sort: "server",
                         minWidth: 70,
                         fillspace: 1
@@ -226,7 +266,7 @@
                         fillspace: 1
                     }
                 ],
-                url: "users",
+                url: "data",
                 datatype: "json",
                 yCount:15,
 
@@ -289,6 +329,7 @@
             });
 
             webix.ui.fullScreen();
+
 
         });
 
