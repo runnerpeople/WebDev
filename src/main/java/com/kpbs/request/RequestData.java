@@ -1,4 +1,4 @@
-package com.kpbs;
+package com.kpbs.request;
 
 import java.math.BigDecimal;
 import java.util.Date;

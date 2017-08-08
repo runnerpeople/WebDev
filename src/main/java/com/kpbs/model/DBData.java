@@ -1,4 +1,4 @@
-package com.kpbs;
+package com.kpbs.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -35,6 +35,7 @@ public class DBData implements Serializable {
     private String createdby;
 
     @Column(name = "updated",columnDefinition = "timestamp without time zone")
+    @Temporal(TemporalType.DATE)
     private Date updated;
 
     @Column(name = "updatedby",length = 32)
@@ -74,6 +75,7 @@ public class DBData implements Serializable {
     private String p_comment;
 
     @Column(name = "p_enriched_ts",columnDefinition = "timestamp without time zone")
+    @Temporal(TemporalType.DATE)
     private Date p_enriched_ts;
 
     @Column(name = "p_enriched",length = 1,columnDefinition = "character varying(1) DEFAULT 'N'::character varying")

@@ -1,5 +1,7 @@
-package com.kpbs;
+package com.kpbs.service;
 
+import com.kpbs.response.ResponseServer;
+import com.kpbs.service.DBService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

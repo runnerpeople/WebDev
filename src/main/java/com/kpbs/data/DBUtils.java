@@ -1,5 +1,7 @@
-package com.kpbs;
+package com.kpbs.data;
 
+import com.kpbs.response.ResponseServer;
+import com.kpbs.model.DBData;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;

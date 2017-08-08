@@ -1,5 +1,9 @@
-package com.kpbs;
+package com.kpbs.controller;
 
+import com.kpbs.request.RequestData;
+import com.kpbs.response.ResponseJSON;
+import com.kpbs.response.ResponseServer;
+import com.kpbs.service.DBService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -114,11 +118,12 @@ public class WebRestController {
     public ResponseEntity<?> changeData(@RequestParam(value = "operation")String operation,
                                         @RequestBody RequestData body,
                                         HttpServletRequest request) {
-        if (!operation.equals("insert") && !(operation.equals("update")) && !(operation.equals("delete"))) {
+        System.out.println(getURL(request));
+        /* if (!operation.equals("insert") && !(operation.equals("update")) && !(operation.equals("delete"))) {
             log.log(Level.WARNING,"User can't make this type of request (" + getURL(request) + ")");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseMessage("failure",
                     "Don't have this type of operation with data - \"" + operation + "\""));
-        }
+        } */
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseJSON(new ArrayList<>()));
     }
 }

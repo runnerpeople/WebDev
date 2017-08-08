@@ -1,4 +1,4 @@
-package com.kpbs;
+package com.kpbs.controller;
 
 import com.jayway.jsonpath.JsonPath;
 import org.junit.Test;

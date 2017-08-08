@@ -45,91 +45,8 @@
             var xhttp = new XMLHttpRequest();
             xhttp.open("GET", "/changeDefault?count="+numberRecords, true);
             xhttp.send();
+            table.define("url",datapoint);
         }
-
-        var getDataProcessorDefinition = function() {
-            return {
-                undoOnError: true,
-                datatype: "json",
-                save: {
-                    "insert": "data?operation=insert",
-                    "update": "data?operation=update",
-                    "delete": "data?operation=delete",
-                },
-                on: {
-                    onValidationError: function(id, obj, details) {
-                        webix.message({type: "error", text: "Проверьте правильность заполнения полей"});
-                    },
-                    onAfterSave: function () {
-                        webix.message("Данные изменены");
-                    },
-                    onBeforeSaveError: function (id, status, response, details) {
-                        var errDetail = null;
-                        try {
-                            errDetail = JSON.parse(details.text);
-                        }
-                        catch (e) {
-                        }
-                        if (errDetail && errDetail.errMsg)
-                            webix.message({type: "error", text: errDetail.errMsg});
-                        else
-                            webix.message({type: "error", text: "Неизвестная ошибка при сохранении изменений"});
-                    },
-                }
-            };
-        },
-
-        getDataCollectionDefinition = function(dsid, masterGrid) {
-            return {
-                url: datapoint,
-                on: {
-                    onLoadError: function (text, xml, xhr) {
-                        var errAnswer = null;
-                        try {
-                            errAnswer = JSON.parse(text);
-                        } catch (e) {
-
-                        }
-                        if (errAnswer == null || errAnswer.errType == null) {
-                            webix.message({type: "error", text: "Произошла неизвестная ошибка при загрузке данных"});
-                            return;
-                        }
-                        webix.message({type: "error", text: "Ошибка загрузки данных: " + errAnswer.errMsg});
-
-                    },
-                    onBeforeLoad: function () {
-                        if (masterGrid)
-                            masterGrid.showOverlay("Загрузка...");
-                    },
-                    onAfterLoad: function () {
-                        if (masterGrid)
-                            masterGrid.hideOverlay();
-                    },
-                }
-            };
-        },
-
-      getDataProcessor = function(master) {
-			    var dataprocessor = getDataProcessorDefinition("someIdentifier");
-			    dataprocessor.master = master;
-			    dataprocessor.rules = {
-            /*
-              "name": webix.rules.isNotEmpty,
-              "ap_category_id": webix.rules.isNotEmpty,
-              "ap_trademark_id": webix.rules.isNotEmpty,
-              */
-              //"art_weight": webix.rules.isNumber,
-
-			    };
-			    return dataprocessor;
-		  },
-
-		  getDataCollection = function(masterGrid, id) {
-			    var datacollection = getDataCollectionDefinition("dsID", masterGrid);
-			    if (id)
-				    datacollection.id = id;
-			    return datacollection;
-		  };
 
       var grid = {
         id: "zsi_pos_table",
@@ -186,7 +103,7 @@
             format: timestampToStr,
             sort: "server",
             minWidth: 200,
-            fillspace: 1
+            fillspace: 1,
           },
           {
             id: "createdby",
@@ -198,10 +115,11 @@
           {
             id: "updated",
             header: ["updated", {content: "serverFilter"}],
-            format: timestampToStr,
+            format: webix.Date.dateToStr("%Y-%m-%d"),
             sort: "server",
             minWidth: 200,
-            fillspace: 1
+            fillspace: 1,
+            editor: "date",
           },
           {
             id: "updatedby",
@@ -290,10 +208,11 @@
           {
             id: "p_enriched_ts",
             header: ["p_enriched_ts", {content: "serverFilter"}],
-            format: timestampToStr,
+            format: webix.Date.dateToStr("%Y-%m-%d"),
             sort: "server",
             minWidth: 200,
-            fillspace: 1
+            fillspace: 1,
+            editor: "date",
           },
           {
             id: "p_enriched",
@@ -334,6 +253,11 @@
         datatype: "json",
         yCount:15,
         url: datapoint,
+        save: {
+          "insert": "data?operation=insert",
+          "update": "data?operation=update",
+          "delete": "data?operation=delete",
+        },
 
         ready: function () {
           webix.extend(this, webix.ProgressBar);
@@ -342,6 +266,57 @@
         datafetch:15,
         datathrottle: 250,
         loadahead:30,
+
+        undo: true,
+
+        rules: {
+          zsi_pos_id: webix.rules.isNotEmpty,
+          zsi_transdata_id: webix.rules.isNotEmpty
+
+        },
+
+        on: {
+          onLoadError: function (text, xml, xhr) {
+            var errAnswer = null;
+            try {
+              errAnswer = JSON.parse(text);
+            } catch (e) {
+              console.log(e);
+            }
+            if (errAnswer == null || errAnswer.errType == null) {
+              webix.message({type: "error", text: "Произошла неизвестная ошибка при загрузке данных"});
+              return;
+            }
+            webix.message({type: "error", text: "Ошибка загрузки данных: " + errAnswer.errMsg});
+
+          },
+          onBeforeLoad: function () {
+            this.showOverlay("Загрузка...");
+          },
+          onAfterLoad: function () {
+            this.hideOverlay();
+          },
+          onValidationError: function(id, obj, details) {
+            $$("zsi_pos_table").undo();
+            webix.message({type: "error", text: "Проверьте правильность заполнения полей"});
+          },
+          onAfterSave: function () {
+            webix.message("Данные изменены");
+          },
+          onBeforeSaveError: function (id, status, response, details) {
+            var errDetail = null;
+            try {
+              errDetail = JSON.parse(details.text);
+            }
+            catch (e) {
+            }
+            if (errDetail && errDetail.errMsg)
+              webix.message({type: "error", text: errDetail.errMsg});
+            else
+              webix.message({type: "error", text: "Неизвестная ошибка при сохранении изменений"});
+          }
+
+        }
 
       };
 
@@ -393,16 +368,7 @@
         ]
       });
 
-      var table = $$('zsi_pos_table');
-
-      var store = new webix.DataCollection(getDataCollection(table, 'tableDataCollection'));
-      var dp = new webix.DataProcessor(getDataProcessor(store));
-      console.log(store);
-      console.log(dp);
-
-      table.data.sync(store);
-
-      webix.ui.fullScreen();
+      webix.ui.fullScreen(datapoint);
     }
 
 
