@@ -127,3 +127,22 @@ var getDataProcessorDefinition = function() {
 
 */
 
+
+/* on:{
+            onAfterSave: function () {
+              webix.message("Данные изменены");
+            },
+            onBeforeSaveError: function (id, status, response, details) {
+              var errDetail = null;
+              try {
+                errDetail = JSON.parse(details.text);
+              }
+              catch (e) {
+              }
+              if (errDetail && errDetail.errMsg)
+                webix.message({type: "error", text: errDetail.errMsg});
+              else
+                webix.message({type: "error", text: "Неизвестная ошибка при сохранении изменений"});
+            }
+          } */
+

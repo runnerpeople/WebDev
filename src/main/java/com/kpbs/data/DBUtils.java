@@ -2,6 +2,7 @@ package com.kpbs.data;
 
 import com.kpbs.response.ResponseServer;
 import com.kpbs.model.DBData;
+import com.kpbs.response.ResponseStatus;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
@@ -22,8 +23,7 @@ public class DBUtils {
 
     private final Logger log = Logger.getLogger(DBUtils.class.getName());
 
-
-    public ResponseServer getUsers(int start_params, int count_params, HashMap<String,String[]> sorted_params,
+    public ResponseServer getData(int start_params, int count_params, HashMap<String,String[]> sorted_params,
                                    HashMap<String,String[]> filter_params) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
@@ -197,7 +197,23 @@ public class DBUtils {
             data = typedQuery.getResultList();
         }
         else
-            data = null;
+            data = new ArrayList<>();
         return new ResponseServer(data,(long)start_params,count);
+    }
+
+    public ResponseStatus updateData(DBData newData) {
+        entityManager.merge(newData);
+        return new ResponseStatus("success");
+    }
+
+    public ResponseStatus deleteData(DBData oldData) {
+        final DBData entityData = entityManager.find(DBData.class,oldData.getZsi_pos_id());
+        if (entityData != null) {
+            entityManager.remove(entityData);
+            return new ResponseStatus("success");
+        }
+        else {
+            return new ResponseStatus("error");
+        }
     }
 }

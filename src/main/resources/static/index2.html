@@ -20,6 +20,7 @@
     <script type="text/javascript" charset="utf-8">
 
     var datapoint = "data";
+    var oldValue = {};
 
     var formatNumber = function(value) {
         return (value < 10) ? '0' + value : value;
@@ -32,6 +33,7 @@
                    + a.getMilliseconds();
     };
 
+
     var onReady = function() {
         if (webix.CustomScroll && !webix.env.touch) webix.CustomScroll.init();
 
@@ -40,12 +42,12 @@
             var table = $$("zsi_pos_table");
             table.define("yCount",numberRecords);
             table.define("datafetch",numberRecords);
-            table.define("loadahead",numberRecords*2);
+            table.define("loadahead",numberRecords);
             table.clearAll();
             var xhttp = new XMLHttpRequest();
             xhttp.open("GET", "/changeDefault?count="+numberRecords, true);
             xhttp.send();
-            table.define("url",datapoint);
+            table.define("url",table.url);
         }
 
       var grid = {
@@ -70,21 +72,24 @@
             header: ["zsi_transdata_id", {content: "serverFilter"}],
             sort: "server",
             minWidth: 250,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
           },
           {
             id: "ad_client_id",
             header: ["ad_client_id", {content: "serverFilter"}],
             sort: "server",
             minWidth: 250,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
           },
           {
             id: "ad_org_id",
             header: ["ad_org_id", {content: "serverFilter"}],
             sort: "server",
             minWidth: 70,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
           },
           {
             id: "isactive",
@@ -95,7 +100,8 @@
             options: [
               {id: "Y", value: "Da"},
               {id: "N", value: "Net"}
-            ]
+            ],
+            editor: "text",
           },
           {
             id: "created",
@@ -110,7 +116,8 @@
             header: ["createdby", {content: "serverFilter"}],
             sort: "server",
             minWidth: 70,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
           },
           {
             id: "updated",
@@ -126,84 +133,96 @@
             header: ["updatedby", {content: "serverFilter"}],
             sort: "server",
             minWidth: 70,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
           },
           {
             id: "p_poscode",
             header: ["p_poscode", {content: "serverFilter"}],
             sort: "server",
             minWidth: 70,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
           },
           {
             id: "p_name",
             header: ["p_name", {content: "serverFilter"}],
             sort: "server",
             minWidth: 350,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
           },
           {
             id: "p_code",
             header: ["p_code", {content: "serverFilter"}],
             sort: "server",
             minWidth: 70,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
           },
           {
             id: "p_inn",
             header: ["p_inn", {content: "serverFilter"}],
             sort: "server",
             minWidth: 110,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
           },
           {
             id: "p_addr",
             header: ["p_addr", {content: "serverFilter"}],
             sort: "server",
             minWidth: 500,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
           },
           {
             id: "p_deliveryaddr",
             header: ["p_deliveryaddr", {content: "serverFilter"}],
             sort: "server",
             minWidth: 500,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
           },
           {
             id: "p_sign",
             header: ["p_sign", {content: "serverFilter"}],
             sort: "server",
             minWidth: 250,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
           },
           {
             id: "p_posaddr",
             header: ["p_posaddr", {content: "serverFilter"}],
             sort: "server",
             minWidth: 500,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
           },
           {
             id: "p_latitude",
             header: ["p_latitude", {content: "serverSelectFilter"}],
             sort: "server",
             minWidth: 70,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
           },
           {
             id: "p_longitude",
             header: ["p_longitude", {content: "serverFilter"}],
             sort: "server",
             minWidth: 70,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
           },
           {
             id: "p_comment",
             header: ["p_comment", {content: "serverFilter"}],
             sort: "server",
             minWidth: 70,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
           },
           {
             id: "p_enriched_ts",
@@ -219,35 +238,46 @@
             header: ["p_enriched", {content: "serverSelectFilter"}],
             sort: "server",
             minWidth: 70,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
           },
           {
             id: "p_region",
             header: ["p_region", {content: "serverFilter"}],
             sort: "server",
             minWidth: 70,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
           },
           {
             id: "p_company_short",
             header: ["p_company_short", {content: "serverFilter"}],
             sort: "server",
             minWidth: 250,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
           },
           {
             id: "latitude",
             header: ["latitude", {content: "serverFilter"}],
             sort: "server",
             minWidth: 100,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
           },
           {
             id: "longitude",
             header: ["longitude", {content: "serverFilter"}],
             sort: "server",
             minWidth: 100,
-            fillspace: 1
+            fillspace: 1,
+            editor: "text",
+          },
+          { id:"trash",
+            header:"",
+            minWidth: 40,
+            fillspace: 1,
+            template:"{common.trashIcon()}"
           }
         ],
         datatype: "json",
@@ -257,6 +287,7 @@
           "insert": "data?operation=insert",
           "update": "data?operation=update",
           "delete": "data?operation=delete",
+
         },
 
         ready: function () {
@@ -265,14 +296,14 @@
 
         datafetch:15,
         datathrottle: 250,
-        loadahead:30,
+        loadahead:15,
 
         undo: true,
+        undoOnError: true,
 
         rules: {
           zsi_pos_id: webix.rules.isNotEmpty,
           zsi_transdata_id: webix.rules.isNotEmpty
-
         },
 
         on: {
@@ -297,27 +328,73 @@
             this.hideOverlay();
           },
           onValidationError: function(id, obj, details) {
-            $$("zsi_pos_table").undo();
-            webix.message({type: "error", text: "Проверьте правильность заполнения полей"});
+            webix.message({type: "error", text: "Данные не сохранены. Проверьте правильность заполнения полей"});
+            webix.confirm({
+              title:"Ошибка",
+              ok:"Да",
+              cancel:"Нет",
+              type:"confirm-error",
+              text:"Введены некорректные данные. Вернуть значение по умолчанию?",
+              callback:function(result) {
+                var table = $$("zsi_pos_table");
+                if (result) {
+                  record = table.getItem(id);
+                  for (var key in oldValue) {
+                    record[key] = oldValue[key];
+                    break;
+                  }
+                  table.refresh();
+                }
+                else {
+                  for (var key in oldValue) {
+                    table.editCell(id,key,true,true);
+                    break;
+                  }
+                }
+              }
+            });
+            this.clearValidation();
           },
-          onAfterSave: function () {
-            webix.message("Данные изменены");
+          onBeforeEditStop: function(value,editor) {
+            oldValue = {};
+            oldValue[editor.column] = value.old;
           },
-          onBeforeSaveError: function (id, status, response, details) {
-            var errDetail = null;
-            try {
-              errDetail = JSON.parse(details.text);
-            }
-            catch (e) {
-            }
-            if (errDetail && errDetail.errMsg)
-              webix.message({type: "error", text: errDetail.errMsg});
-            else
-              webix.message({type: "error", text: "Неизвестная ошибка при сохранении изменений"});
+        },
+        onClick:{
+          "fa-trash":function(event, id, node) {
+            webix.confirm({
+              title:"Удаление данных",
+              ok:"Да",
+              cancel:"Нет",
+              type:"confirm-warning",
+              text:"Вы, действительно, хотите удалить эту строчку?",
+              callback:function(result) {
+                var table = $$("zsi_pos_table");
+                if (result) {
+                  webix.ajax().post("data?operation=delete",table.getItem(id),
+                                    function(text, data, XmlHttpRequest) {
+                                        try {
+                                          textJSON = JSON.parse(text);
+                                        }
+                                        catch (e) {
+                                        }
+                                        if (textJSON.status == "success") {
+                                            webix.message("Данные успешно удалены");
+                                            table.remove(id);
+                                        }
+                                        else if (textJSON.status == "error") {
+                                           webix.message({type: textJSON.status, text: textJSON.message});
+                                        }
+                                    },
+
+
+                  );
+                }
+               table.unselect(id,"trash");
+              }
+            });
           }
-
         }
-
       };
 
 

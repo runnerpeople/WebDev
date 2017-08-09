@@ -1,12 +1,16 @@
 package com.kpbs.controller;
 
-import com.kpbs.request.RequestData;
+import com.kpbs.request.RequestServer;
+import com.kpbs.response.ResponseErrorMessage;
 import com.kpbs.response.ResponseJSON;
 import com.kpbs.response.ResponseServer;
+import com.kpbs.response.ResponseStatus;
 import com.kpbs.service.DBService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,12 +24,12 @@ import java.util.logging.Logger;
 public class WebRestController {
 
     @Autowired
-    private DBService dataDAO;
+    private DBService dataService;
 
     private final Logger log = Logger.getLogger(WebRestController.class.getName());
 
-    private static final int DEFAULT_START_PARAM = 0;
-    private static int DEFAULT_COUNT_PARAM = 15;
+    public static final int DEFAULT_START_PARAM = 0;
+    public static int DEFAULT_COUNT_PARAM = 15;
 
     private String getURL(HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
@@ -102,8 +106,8 @@ public class WebRestController {
             return ResponseEntity.badRequest().body(new ResponseJSON(new ArrayList<>()));
         }
         else {
-            ResponseServer response = dataDAO.getUsers(start_param,count_param,sorted_params,filter_params);
-            if (response == null) {
+            ResponseServer response = dataService.getData(start_param,count_param,sorted_params,filter_params);
+            if (response == null || response.getData() == null || response.getData().size() == 0) {
                 log.log(Level.WARNING,"No data");
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseJSON(new ArrayList<>()));
             }
@@ -114,16 +118,33 @@ public class WebRestController {
         }
     }
 
-    @RequestMapping(value = "/data", method = RequestMethod.POST)
+    @RequestMapping(value = "/data", method = RequestMethod.POST,consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<?> changeData(@RequestParam(value = "operation")String operation,
-                                        @RequestBody RequestData body,
+                                        @RequestBody MultiValueMap<String,Object> body,
                                         HttpServletRequest request) {
-        System.out.println(getURL(request));
-        /* if (!operation.equals("insert") && !(operation.equals("update")) && !(operation.equals("delete"))) {
+        if (!operation.equals("insert") && !(operation.equals("update")) && !(operation.equals("delete"))) {
             log.log(Level.WARNING,"User can't make this type of request (" + getURL(request) + ")");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseMessage("failure",
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseErrorMessage("error",
                     "Don't have this type of operation with data - \"" + operation + "\""));
-        } */
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseJSON(new ArrayList<>()));
+        }
+        RequestServer newData = new RequestServer(body);
+        if (!newData.isValid())
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseErrorMessage("error",
+                    "Возникла ошибка при парсинге данных"));
+        if (operation.equals("update")) {
+            ResponseStatus responseMessage = dataService.updateData(newData.getData());
+            return ResponseEntity.ok(responseMessage);
+        }
+        else if (operation.equals("delete")) {
+            ResponseStatus responseMessage = dataService.deleteData(newData.getData());
+            if (responseMessage.getStatus().equals("error")) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseErrorMessage("error",
+                        "Internal Server Error"));
+            }
+            else
+                return ResponseEntity.ok(responseMessage);
+        }
+        else
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseJSON(new ArrayList<>()));
     }
 }
